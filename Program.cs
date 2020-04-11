@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
@@ -8,25 +8,31 @@ namespace ChapIce
 {
     class Program
     {
-        public static RenderWindow window = new RenderWindow(new VideoMode(1200, 1000), "ChapIce");
+        public static RenderWindow window = new RenderWindow(new VideoMode(1200, 800), "ChapIce");
         public static Logic logic = new Logic(window);
-        static void Main(string[] args)
+        static void Main()
         {
             window.Closed += WindowCloser;
             window.KeyPressed += WindowKeyPresser;
             window.Resized += NoResize;
             while (window.IsOpen)
             {
+                logic.clock.Restart();
                 window.DispatchEvents();
                 window.Clear(Color.Black);
-                logic.DrawAll(window);
+                logic.Check(window);
                 window.Display();
+                while (true)
+                {
+                    if (logic.clock.ElapsedTime.AsMilliseconds() >= 1 / 30 * 1000)
+                        break;
+                }
             }
         }
 
         private static void NoResize(object sender, SizeEventArgs e)
         {
-            window.Size = new Vector2u(1200, 1000);
+            window.Size = new Vector2u(1200, 800);
         }
         private static void WindowKeyPresser(object sender, KeyEventArgs e)
         {
