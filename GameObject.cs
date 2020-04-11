@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
@@ -9,17 +9,18 @@ namespace ChapIce
 {
     class GameObject
     {
+        public int life;
+        public List<GameObject> list;
         public Vector2i size;
-        protected Image image;
-        protected Texture texture;
+        public Image image;
+        public Texture texture;
+        public int count;
         public Sprite sprite;
+        public bool IsAlive = true;
+        public int index;
         public string name;
-        public List<GameObject> gameObjects;
+        public Clock clock = new Clock();
         public bool isCollide = false;
-        public float top;
-        public float bottom;
-        public float right;
-        public float left;
 
         public enum Direction { right = 1, left = 2, up = 3, down = 4 };
         public Direction direction;
@@ -27,7 +28,7 @@ namespace ChapIce
         {
         }
         public virtual void Draw(RenderWindow window)
-        {
+        {   
             window.Draw(sprite);
         }
 
@@ -35,7 +36,7 @@ namespace ChapIce
         {
             Box result;
             result.bottom = size.Y + sprite.Position.Y;
-            result.top = size.X;
+            result.top = sprite.Position.Y;
             result.left = sprite.Position.X;
             result.right = size.X + sprite.Position.X;
             return result;
@@ -46,16 +47,21 @@ namespace ChapIce
             {
                 if (i == this)
                     continue;
-
+                
                 if (GetBox().IsIntersectWith(i.GetBox()))
                 {
-                    OnCollisionReact(i.name);
+                    OnCollisionReact(i);
+                    i.OnCollisionReact(this);
+                    break;
                 }
             }
         }
-        public virtual void OnCollisionReact(string name)
+        public virtual void OnCollisionReact(GameObject i)
         {
-
+        }
+        public float GeElapsedTime()
+        {
+            return clock.ElapsedTime.AsMicroseconds();
         }
     }
 }
