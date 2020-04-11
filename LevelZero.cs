@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
@@ -9,9 +9,11 @@ namespace ChapIce
 {
     class LevelZero : Character
     {
-        public LevelZero(Vector2f spawnPosition)
+        public LevelZero(Vector2f spawnPosition, List<GameObject> list)
         {
+            this.list = list;
             name = "levelZero";
+            life = 1;
             size = new Vector2i(43, 65);
             spriteStep = 0;
             startingPositionX = 18;
@@ -52,6 +54,16 @@ namespace ChapIce
             RandomMove();
             Borders();
             base.Draw(window);
+        }
+        public override void OnCollisionReact(GameObject i)
+        {
+            if (i.name == "leg") 
+               NewCharacter();
+        }
+        public void NewCharacter()
+        {
+            IsAlive = false;
+            list.Add(new LevelOne(sprite.Position, list));
         }
     }
 }
