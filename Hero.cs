@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
@@ -32,6 +32,10 @@ namespace ChapIce
         }
         public Hero(List<GameObject> list)
         {
+            clock = new Clock();
+            life = 10;
+            count = 0;
+            name = "skull";
             this.list = list;
             spawnPosition = new Vector2f(600, 500);
             spriteStep = 0;
@@ -69,17 +73,28 @@ namespace ChapIce
                     MoveDown(x, y);
                     break;
                 case Keyboard.Key.F:
-                    Fireball fireball = new Fireball(sprite.Position);
+                    Fireball fireball = new Fireball(sprite.Position, list);
                     fireball.direction = direction;
                     list.Add(fireball);
                     break;
             }
         }
-        public override void OnCollisionReact(string name)
+        public override void OnCollisionReact(GameObject i)
         {
-            if (name == "levelZero") 
+            if (i.name == "levelZero" || i.name == "levelOne") 
             {
-                sprite.Color = Color.Red;
+                if (clock.ElapsedTime.AsSeconds() >= 3)
+                {
+                    life--;
+                    clock.Restart();
+                }
+            }
+            if (i.name == "leg")
+            {
+                count += 5 - ((Food)i).Bitness;
+                if (((Food)i).healer)
+                    life++;
+                TurnRed();
             }
         }
     }
