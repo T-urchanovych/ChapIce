@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFML.Graphics;
 using SFML.Audio;
 using SFML.System;
@@ -8,9 +8,8 @@ using System.Collections.Generic;
 
 namespace ChapIce
 {
-    class Character:GameObject
+    class Character : GameObject
     {
-        protected List<GameObject> list;
         protected int startingPositionX;
         public int textureLength;
         public int stepCounter;
@@ -62,37 +61,37 @@ namespace ChapIce
         protected void MoveUp(float x, float y)
         {
             sprite.Position = new Vector2f(x, y - speed);
-            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yUp), size);
-            spriteStep += textureLength;
             if (spriteStep >= image.Size.X)
                 spriteStep = 0;
+            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yUp), size);
+            spriteStep += textureLength;
             direction = Direction.up;
         }
         protected void MoveDown(float x, float y)
         {
             sprite.Position = new Vector2f(x, y + speed);
-            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yDown), size);
-            spriteStep += textureLength;
             if (spriteStep >= image.Size.X)
                 spriteStep = 0;
+            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yDown), size);
+            spriteStep += textureLength;
             direction = Direction.down;
         }
         protected void MoveRight(float x, float y)
         {
             sprite.Position = new Vector2f(x + speed, y);
-            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yRight), size);
-            spriteStep += textureLength;
             if (spriteStep >= image.Size.X)
                 spriteStep = 0;
+            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yRight), size);
+            spriteStep += textureLength;
             direction = Direction.right;
         }
         protected void MoveLeft(float x, float y)
         {
             sprite.Position = new Vector2f(x - speed, y);
-            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yLeft), size);
-            spriteStep += textureLength;
             if (spriteStep >= image.Size.X)
                 spriteStep = 0;
+            sprite.TextureRect = new IntRect(new Vector2i(startingPositionX + spriteStep, yLeft), size);
+            spriteStep += textureLength;
             direction = Direction.left;
         }
         public void RandomMove()
@@ -101,7 +100,7 @@ namespace ChapIce
             Movement();
             if (stepCounter % 1000 == 0)
             {
-                switch(m)
+                switch (m)
                 {
                     case 1:
                         direction = Direction.right;
@@ -120,14 +119,30 @@ namespace ChapIce
         }
         public void Borders()
         {
-            if (sprite.Position.Y + size.X >= 1170)
+            if (sprite.Position.Y + size.X >= 796)
                 direction = Direction.up;
             else if (sprite.Position.X >= 1160)
                 direction = Direction.left;
             else if (sprite.Position.X <= 0)
                 direction = Direction.right;
-            else if (sprite.Position.Y <= 0)
+            else if (sprite.Position.Y <= 45)
                 direction = Direction.down;
+        }
+        public void RestInPeace()
+        {
+            IsAlive = false;
+            if (random.Next(0, 10) == 1)
+                list.Add(new Food(sprite.Position, true));
+            else list.Add(new Food(sprite.Position, false));
+        }
+        public void TurnRed()
+        {
+            if (sprite.Color.R + 35 <= 255)
+                sprite.Color = new Color(Convert.ToByte(sprite.Color.R + 35), sprite.Color.G, sprite.Color.B);
+            if (sprite.Color.B - 35 >= 0)
+                sprite.Color = new Color(sprite.Color.R, sprite.Color.G, Convert.ToByte(sprite.Color.B - 35));
+            if (sprite.Color.G - 35 >= 0)
+                sprite.Color = new Color(sprite.Color.R, Convert.ToByte(sprite.Color.G - 35), sprite.Color.B);
         }
     }
 }
